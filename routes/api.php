@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\BookController;
 use App\Http\Controllers\LibraryController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,3 +17,4 @@ Route::group([
 });
 
 Route::apiResource('library', LibraryController::class);
+Route::apiResource('books', BookController::class);
