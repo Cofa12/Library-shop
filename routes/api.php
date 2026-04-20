@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\LibraryController;
 use Illuminate\Support\Facades\Route;
 
 Route::group([
@@ -13,3 +14,5 @@ Route::group([
     Route::post('refresh', [AuthController::class, 'refresh'])->middleware('auth:api');
     Route::get('me', [AuthController::class, 'me'])->middleware('auth:api');
 });
+
+Route::apiResource('library', LibraryController::class);

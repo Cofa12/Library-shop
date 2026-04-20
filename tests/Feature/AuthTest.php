@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 
 class AuthTest extends TestCase
@@ -42,8 +43,8 @@ class AuthTest extends TestCase
             'password_confirmation' => '124',
         ]);
 
-        $response->assertStatus(400)
-            ->assertJsonStructure(['name', 'email', 'password']);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure(['errors'=>['name', 'email', 'password']]);
     }
 
     public function test_user_can_login()
@@ -71,9 +72,8 @@ class AuthTest extends TestCase
             'email' => '',
             'password' => '',
         ]);
-
-        $response->assertStatus(422)
-            ->assertJsonStructure(['email', 'password']);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure(['errors'=>['email', 'password']]);
     }
 
     public function test_login_with_invalid_credentials()
