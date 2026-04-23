@@ -11,7 +11,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(
+            \App\Contracts\LibraryRepositoryInterface::class,
+            \App\Repositories\LibraryRepository::class
+        );
     }
 
     /**
@@ -19,6 +22,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        \Illuminate\Http\Resources\Json\JsonResource::withoutWrapping();
     }
 }

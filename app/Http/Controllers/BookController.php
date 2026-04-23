@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Books;
+use App\Http\Resources\BookResource;
 use Illuminate\Http\Request;
 use PhpParser\Node\Expr\FuncCall;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,15 +15,16 @@ class BookController extends Controller
     {
         return response()->json([
             'message' => 'Books list',
-            'data' => Books::all()
+            'data' => BookResource::collection(Books::all())
         ], Response::HTTP_OK);
     }
 
     public function store(Request $request) :JsonResponse
     {
-        Books::create($request->all());
+        $book = Books::create($request->all());
         return response()->json([
             'message' => 'Book created successfully',
+            'data' => new BookResource($book)
         ], Response::HTTP_CREATED);
     }
 
@@ -32,7 +34,7 @@ class BookController extends Controller
         if($book){
             return response()->json([
                 'message' => 'Book found',
-                'data' => $book
+                'data' => new BookResource($book)
             ], Response::HTTP_OK);
         }
         return response()->json([

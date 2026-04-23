@@ -3,12 +3,12 @@
 namespace Tests\Feature;
 
 use App\Models\Library;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
 class LibraryTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseMigrations;
 
     public function test_can_list_libraries()
     {

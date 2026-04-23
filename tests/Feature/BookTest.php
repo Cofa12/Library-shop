@@ -4,12 +4,12 @@ namespace Tests\Feature;
 
 use App\Models\Books;
 use App\Models\Library;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
 class BookTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseMigrations;
 
     protected function setUp(): void
     {

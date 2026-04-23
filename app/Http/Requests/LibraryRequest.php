@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\DTOs\LibraryInput;
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
 class LibraryRequest extends FormRequest
@@ -27,5 +29,16 @@ class LibraryRequest extends FormRequest
             'phone' => 'required|string|max:20',
             'email' => 'required|email|max:255',
         ];
+    }
+
+    public function dto(?User $user): LibraryInput
+    {
+        return new LibraryInput(
+            $this->input('name'),
+            $this->input('address'),
+            $this->input('phone'),
+            $this->input('email'),
+            $user?->id
+        );
     }
 }
