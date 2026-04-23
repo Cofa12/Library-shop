@@ -4,17 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Collection;
+use App\Models\Book;
 
 class Library extends Model
 {
     use HasFactory;
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'library';
+    protected $connection = 'mysql';
+    protected $table = 'libraries';
 
     /**
      * The attributes that are mass assignable.
@@ -26,5 +24,15 @@ class Library extends Model
         'address',
         'phone',
         'email',
+        'user_id',
     ];
+
+    public function books() : Collection {
+        return Book::where('library_id', (string) $this->id)->get();
+    }
+
+    public function user() : BelongsTo 
+    {
+        return $this->belongsTo(User::class);
+    }
 }

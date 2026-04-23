@@ -24,6 +24,7 @@ class LibraryFactory extends Factory
             'address' => $this->faker->address(),
             'phone' => $this->faker->phoneNumber(),
             'email' => $this->faker->unique()->safeEmail(),
+            'user_id' => \App\Models\User::factory(),
         ];
     }
 }

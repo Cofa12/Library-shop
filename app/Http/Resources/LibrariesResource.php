@@ -5,12 +5,8 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class LibraryResource extends JsonResource
+class LibrariesResource extends JsonResource
 {
-    public function __construct($resource)
-    {
-        parent::__construct($resource);
-    }
     /**
      * Transform the resource into an array.
      *
@@ -27,7 +23,6 @@ class LibraryResource extends JsonResource
             'email' => $this->email,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'books' => BookResource::collection($this->books()),
         ];
     }
 }

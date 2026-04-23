@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Books;
+use App\Models\Book;
 use App\Http\Resources\BookResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use PhpParser\Node\Expr\FuncCall;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,13 +16,13 @@ class BookController extends Controller
     {
         return response()->json([
             'message' => 'Books list',
-            'data' => BookResource::collection(Books::all())
+            'data' => BookResource::collection(Book::all())
         ], Response::HTTP_OK);
     }
 
     public function store(Request $request) :JsonResponse
     {
-        $book = Books::create($request->all());
+        $book = Book::create($request->all());
         return response()->json([
             'message' => 'Book created successfully',
             'data' => new BookResource($book)
@@ -30,7 +31,7 @@ class BookController extends Controller
 
     public function show($id)
     {
-        $book = Books::find($id);
+        $book = Book::find($id);
         if($book){
             return response()->json([
                 'message' => 'Book found',
@@ -44,7 +45,7 @@ class BookController extends Controller
 
     public function destroy($id)
     {
-        $book = Books::find($id);
+        $book = Book::find($id);
         if($book){
             $book->delete();
             return response()->json([

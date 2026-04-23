@@ -4,6 +4,7 @@ namespace App\Repositories;
 use App\Contracts\LibraryRepositoryInterface;
 use App\DTOs\LibraryInput;
 use App\Models\Library;
+use Illuminate\Database\Eloquent\Collection;
 
 
 
@@ -31,7 +32,7 @@ public function find(string $id): ?Library
     return Library::find($id);
 }
 
-public function findAll(): \Illuminate\Database\Eloquent\Collection
+public function findAll(): Collection
 {
     return Library::all();
 }

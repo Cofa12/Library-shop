@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Contracts\LibraryRepositoryInterface;
 use App\Http\Requests\LibraryRequest;
 use App\Models\Library;
 use App\Http\Resources\LibraryResource;
+use App\Http\Resources\LibrariesResource;
+use Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Symfony\Component\HttpFoundation\Response;
+use App\Contracts\LibraryRepositoryInterface;
 
 class LibraryController extends Controller
 {
@@ -20,7 +22,7 @@ class LibraryController extends Controller
      */
     public function index(): AnonymousResourceCollection
     {
-        return LibraryResource::collection($this->libraryRepository->findAll());
+        return LibrariesResource::collection($this->libraryRepository->findAll());
     }
 
     /**
@@ -28,10 +30,9 @@ class LibraryController extends Controller
      */
     public function store(LibraryRequest $request): JsonResponse
     {
-        $library = $this->libraryRepository->create($request->dto($request->user()));
+        $this->libraryRepository->create($request->dto(Auth::guard('api')->user()));
         return response()->json([
             'message' => 'Library created successfully',
-            'data' => new LibraryResource($library)
         ], Response::HTTP_CREATED);
     }
 

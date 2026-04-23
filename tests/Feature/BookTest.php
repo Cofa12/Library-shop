@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\Books;
+use App\Models\Book;
 use App\Models\Library;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
@@ -16,12 +16,12 @@ class BookTest extends TestCase
         parent::setUp();
         // Truncate the MongoDB books collection before each test
         // since RefreshDatabase only refreshes the SQLite connection.
-        Books::truncate();
+        Book::truncate();
     }
 
     public function test_can_list_books()
     {
-        Books::factory()->count(3)->create();
+        Book::factory()->count(3)->create();
 
         $response = $this->getJson('/api/books');
 
@@ -55,10 +55,10 @@ class BookTest extends TestCase
 
     public function test_can_show_book()
     {
-        $book = Books::factory()->create();
+        $book = Book::factory()->create();
 
         // MongoDB might return the ID as a string or _id depending on serialization.
-        // BookController uses Books::find($id) where $id is int in type hint?
+        // BookController uses Book::find($id) where $id is int in type hint?
         // Wait, BookController show method has: public Function show(int $id)
         // If MongoDB IDs are strings (which they usually are), int $id will fail.
         // Let's check the controller again.
@@ -76,7 +76,7 @@ class BookTest extends TestCase
 
     public function test_can_delete_book()
     {
-        $book = Books::factory()->create();
+        $book = Book::factory()->create();
 
         $response = $this->deleteJson('/api/books/' . $book->id);
 
