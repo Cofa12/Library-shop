@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Http\Resources\BookResource;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use PhpParser\Node\Expr\FuncCall;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
