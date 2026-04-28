@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\DTOs\RegisterInput;
 
 class RegisterRequest extends FormRequest
 {
@@ -26,5 +27,14 @@ class RegisterRequest extends FormRequest
             'email' => 'required|string|email|max:100|unique:users',
             'password' => 'required|string|confirmed|min:6',
         ];
+    }
+
+    public function dto(): RegisterInput
+    {
+        return new RegisterInput(
+            $this->name,
+            $this->email,
+            $this->password,
+        );
     }
 }

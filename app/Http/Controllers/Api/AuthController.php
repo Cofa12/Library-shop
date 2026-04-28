@@ -5,11 +5,12 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
-use App\Models\User;
 use App\Http\Resources\UserResource;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
+use App\Services\RegisterService;
+use App\Http\Resources\AuthResource;
 
 class AuthController extends Controller
 {
@@ -18,7 +19,7 @@ class AuthController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(private RegisterService $registerService)
     {
         // middleware handles protection in routes/api.php
     }
@@ -28,7 +29,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): AuthResource | JsonResponse
     {
         $credentials = $request->only('email', 'password');
 
@@ -36,7 +37,10 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
         }
 
-        return $this->respondWithToken($token);
+        return new AuthResource([
+            'token' => $token,
+            'user' => Auth::guard('api')->user()
+        ]);
     }
 
     /**
@@ -46,28 +50,14 @@ class AuthController extends Controller
      */
     public function register(RegisterRequest $request)
     {
-        try {
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-            ]);
-
-            $token = Auth::guard('api')->login($user);
-
-            return response()->json([
-                'message' => 'User successfully registered',
-                'user' => new UserResource($user),
-                'access_token' => $token,
-                'token_type' => 'bearer',
-                'expires_in' => Auth::guard('api')->factory()->getTTL() * 60
-            ], Response::HTTP_CREATED);
-        } catch (\Throwable $e) {
-            return response()->json([
-                'message' => 'Registration failed',
-                'error' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        [$user, $token] = $this->registerService->register($request->dto());
+        return response()->json(array_merge(
+            ['message' => 'User successfully registered'],
+            (new AuthResource([
+                'token' => $token,
+                'user' => $user
+            ]))->resolve()
+        ), Response::HTTP_CREATED);
     }
 
     /**
@@ -75,7 +65,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function me()
+    public function me(): UserResource
     {
         return new UserResource(Auth::guard('api')->user());
     }
@@ -97,25 +87,11 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function refresh()
+    public function refresh(): AuthResource
     {
-        return $this->respondWithToken(Auth::guard('api')->refresh());
-    }
-
-    /**
-     * Get the token array structure.
-     *
-     * @param  string $token
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    protected function respondWithToken($token)
-    {
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => Auth::guard('api')->factory()->getTTL() * 60,
-            'user' => new UserResource(Auth::guard('api')->user())
+        return new AuthResource([
+            'token' => Auth::guard('api')->refresh(),
+            'user' => Auth::guard('api')->user()
         ]);
     }
 }
