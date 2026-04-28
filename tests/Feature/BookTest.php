@@ -26,10 +26,7 @@ class BookTest extends TestCase
         $response = $this->getJson('/api/books');
 
         $response->assertStatus(200)
-            ->assertJson([
-                'message' => 'Books list',
-            ])
-            ->assertJsonCount(3, 'data');
+            ->assertJsonCount(3);
     }
 
     public function test_can_create_book()

@@ -63,7 +63,6 @@ class LibraryController extends Controller
     public function destroy(Library $library): JsonResponse
     {
         $library->delete();
-
         return response()->json([
             'message' => 'Library deleted successfully'
         ],Response::HTTP_OK);

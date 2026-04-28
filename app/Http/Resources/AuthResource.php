@@ -16,6 +16,7 @@ class AuthResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'message' => $this->when(isset($this['message']), $this['message'] ?? null),
             'access_token' => $this['token'],
             'token_type' => 'bearer',
             'expires_in' => Auth::guard('api')->factory()->getTTL() * 60,

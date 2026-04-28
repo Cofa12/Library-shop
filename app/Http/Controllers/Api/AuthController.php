@@ -48,16 +48,14 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register(RegisterRequest $request)
+    public function register(RegisterRequest $request): JsonResponse
     {
         [$user, $token] = $this->registerService->register($request->dto());
-        return response()->json(array_merge(
-            ['message' => 'User successfully registered'],
-            (new AuthResource([
-                'token' => $token,
-                'user' => $user
-            ]))->resolve()
-        ), Response::HTTP_CREATED);
+        return (new AuthResource([
+            'token' => $token,
+            'user' => $user,
+            'message' => 'User successfully registered'
+        ]))->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
     /**
