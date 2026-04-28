@@ -13,10 +13,8 @@ class User extends Authenticatable implements JWTSubject
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
-    
-    protected $connection = 'mysql';
 
-    
+    protected $table = 'users';
 
     /**
      * The attributes that are mass assignable.
