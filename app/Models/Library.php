@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 use App\Models\Book;
+use MongoDB\Laravel\Eloquent\HybridRelations;
+
 
 class Library extends Model
 {
-    use HasFactory;
+    use HasFactory, HybridRelations;
     protected $connection = 'mysql';
     protected $table = 'libraries';
 

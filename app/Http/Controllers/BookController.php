@@ -20,7 +20,19 @@ class BookController extends Controller
 
     public function store(Request $request) :JsonResponse
     {
-        $book = Book::create($request->all());
+        $data = $request->all();
+        if (isset($data['price'])) {
+            $data['price'] =  $data['price'] * 100;
+        }
+
+        if ($request->hasFile('pdf_file')) {
+            $file = $request->file('pdf_file');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('books/pdfs'), $fileName);
+            $data['pdf_path'] = 'books/pdfs/' . $fileName;
+        }
+
+        $book = Book::create($data);
         return response()->json([
             'message' => 'Book created successfully',
             'data' => new BookResource($book)

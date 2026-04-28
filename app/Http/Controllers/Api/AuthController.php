@@ -46,21 +46,28 @@ class AuthController extends Controller
      */
     public function register(RegisterRequest $request)
     {
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        try {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
 
-        $token = Auth::guard('api')->login($user);
+            $token = Auth::guard('api')->login($user);
 
-        return response()->json([
-            'message' => 'User successfully registered',
-            'user' => new UserResource($user),
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => Auth::guard('api')->factory()->getTTL() * 60
-        ], Response::HTTP_CREATED);
+            return response()->json([
+                'message' => 'User successfully registered',
+                'user' => new UserResource($user),
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => Auth::guard('api')->factory()->getTTL() * 60
+            ], Response::HTTP_CREATED);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'message' => 'Registration failed',
+                'error' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**

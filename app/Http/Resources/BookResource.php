@@ -19,8 +19,9 @@ class BookResource extends JsonResource
             'name' => $this->name,
             'author' => $this->author,
             'isbn' => $this->isbn,
-            'price' => $this->price,
+            'price' => $this->price/100,
             'library_id' => $this->library_id,
+            'pdf_url' => $this->pdf_path ? url($this->pdf_path) : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
