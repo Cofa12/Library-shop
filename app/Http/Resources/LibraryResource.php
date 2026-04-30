@@ -23,6 +23,7 @@ class LibraryResource extends JsonResource
             'name' => $this->name,
             'address' => $this->address,
             'phone' => $this->phone,
+            'user_id' => $this->user_id,
             'user_name' => $this->user?->name,
             'email' => $this->email,
             'created_at' => $this->created_at,

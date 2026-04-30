@@ -14,6 +14,15 @@ class BookResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        $data = parent::toArray($request);
+        
+        if (isset($data['price'])) {
+            $data['price'] = $data['price'] * 100;
+        }
+
+        $data['pdf_url'] = isset($data['pdf_file']) ? url($data['pdf_file']) : null;
+        $data['cover_image_url'] = isset($data['cover_image']) ? url($data['cover_image']) : null;
+
+        return $data;
     }
 }

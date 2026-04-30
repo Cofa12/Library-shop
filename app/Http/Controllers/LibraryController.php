@@ -49,6 +49,12 @@ class LibraryController extends Controller
      */
     public function update(LibraryRequest $request, Library $library): JsonResponse
     {
+        if ($library->user_id !== auth()->id()) {
+            return response()->json([
+                'message' => 'Unauthorized.',
+            ], Response::HTTP_FORBIDDEN);
+        }
+
         $library->update($request->validated());
         
         return response()->json([
@@ -62,6 +68,12 @@ class LibraryController extends Controller
      */
     public function destroy(Library $library): JsonResponse
     {
+        if ($library->user_id !== auth()->id()) {
+            return response()->json([
+                'message' => 'Unauthorized.',
+            ], Response::HTTP_FORBIDDEN);
+        }
+
         $library->delete();
         return response()->json([
             'message' => 'Library deleted successfully'
