@@ -24,7 +24,13 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name' => 'required|string|between:2,100',
-            'email' => 'required|string|email|max:100|unique:users',
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:100',
+                \Illuminate\Validation\Rule::unique(\App\Models\User::class)
+            ],
             'password' => 'required|string|confirmed|min:6',
         ];
     }

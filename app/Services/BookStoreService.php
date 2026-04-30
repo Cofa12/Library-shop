@@ -20,6 +20,31 @@ class BookStoreService
         $book = Book::create($data);
         return $book;
     }
+
+    public function updateBook(Request $request, Book $book)
+    {
+        $data = $request->all();
+        if (isset($request->price)) {
+            $data = $this->convertCurrencyToCents($request->price, $data);
+        }
+        
+        if ($request->hasFile('pdf_file')) {
+            if ($book->pdf_file && File::exists(public_path($book->pdf_file))) {
+                File::delete(public_path($book->pdf_file));
+            }
+            $data = $this->storePdf($request->file('pdf_file'), $data);
+        }
+
+        if ($request->hasFile('cover_image_file')) {
+            if ($book->cover_image && File::exists(public_path($book->cover_image))) {
+                File::delete(public_path($book->cover_image));
+            }
+            $data = $this->storeImage($request->file('cover_image_file'), $data);
+        }
+
+        $book->update($data);
+        return $book;
+    }
     private function storePdf(UploadedFile|null $pdfFile,array $data):array
     {
         if(!$pdfFile)
@@ -29,11 +54,11 @@ class BookStoreService
         $data['pdf_file'] = 'books/pdfs/' . $fileName;
         return $data;
     }
-    private function convertCurrencyToCents(int $price,array $data):array
+    private function convertCurrencyToCents(float $price,array $data):array
     {
         if(!$price)
             return $data;
-        $data['price'] =  $data['price'] / 100;
+        $data['price'] =  $price * 100;
         return $data;
     }
     private function storeImage(UploadedFile|null $imageFile,array $data):array
